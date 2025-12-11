@@ -1,86 +1,73 @@
 /* Card Container */
 .userCard {
     display: flex;
-    justify-content: space-between; /* Magic: Info Left, Button Right */
+    justify-content: space-between; /* Button Right, Text Left */
+    gap: 1.2rem;      /* Aapki choice */
+    padding: 1.3rem;  /* Aapki choice */
     align-items: center;
-    width: 100%;
-    padding: 1rem;
+    box-shadow: 10px 10px 15px 0px rgb(173,173,173); /* Aapki choice (Heavy Shadow) */
     background-color: white;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08); /* Soft Shadow */
-    border-radius: 10px;
+    border-radius: 10px; /* Thoda curve acha lagta hai */
+    flex-wrap: wrap;  /* Aapki choice */
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    margin-bottom: 0.8rem; /* Cards ke beech gap */
+    margin-bottom: 1.2rem; /* Cards ke beech gap */
+    width: 100%;
 }
 
-.userCard:hover {
-    transform: translateY(-2px); /* Hover effect */
-    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.12);
-}
-
-/* User Info Wrapper (Left Side) */
+/* User Info Wrapper (Photo + Text) */
 .userInfo {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    overflow: hidden; /* Lambe naam ke liye safe */
+    gap: 1.2rem;
+    flex: 1; /* Ye text area ko faila dega taaki button right mein rahe */
 }
 
 /* Image Styling */
 .profilePicture {
-    width: 3.5rem;  /* Perfect list size */
-    height: 3.5rem;
+    /* 10% width kabhi-kabhi bohot choti ya badi ho jati hai list me. 
+       Isliye Discover page jaisa dikhane ke liye Fixed Pixel best hai. */
+    width: 60px; 
+    height: 60px;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0; /* Photo kabhi pichkegi nahi */
+    aspect-ratio: 1/1;
     border: 1px solid #e0e0e0;
 }
 
 /* Text Styling */
-.userInfo div {
-    display: flex;
-    flex-direction: column;
-}
-
 .userInfo h1 {
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 600;
     margin: 0;
     color: #333;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 }
 
 .userInfo p {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     color: #666;
     margin: 0;
 }
 
-/* Button Styling (Right Side) */
+/* Button Styling */
 .connectedButton {
-    padding: 0.5rem 1.2rem;
-    background: #0073b1; /* LinkedIn Blue */
+    padding: 0.6rem 1.2rem;
+    background: rgb(100, 175, 236); /* Aapka Blue Color */
     color: white;
     border: none;
     outline: none;
-    border-radius: 20px; /* Pill Shape */
+    border-radius: 10px;
     font-weight: 600;
-    font-size: 0.85rem;
     cursor: pointer;
+    white-space: nowrap; /* Button text wrap na ho */
     transition: background 0.3s;
-    white-space: nowrap;
-    flex-shrink: 0; /* Button shrink nahi hoga */
 }
 
 .connectedButton:hover {
-    background: #005582; /* Dark Blue on Hover */
+    background: rgb(80, 155, 216); /* Thoda dark hover par */
 }
 
-/* Disabled State (Pending Button ke liye) */
+/* Disabled Button (Pending state) */
 .connectedButton:disabled {
-    background-color: #6c757d; /* Grey color */
+    background-color: #a0a0a0; /* Grey for Pending */
     cursor: default;
-    opacity: 1; /* Brightness full rahegi */
 }
