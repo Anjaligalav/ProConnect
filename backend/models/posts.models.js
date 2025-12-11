@@ -1,5 +1,5 @@
 import mongoose, { mongo } from "mongoose";
-
+import Comment from "./comments.models.js";
 
 const PostSchema = mongoose.Schema({
     userId: {
@@ -33,6 +33,15 @@ const PostSchema = mongoose.Schema({
     fileType:{
         type: String,
         default: ''
+    }
+});
+
+
+PostSchema.post("findOneAndDelete", async (post) => {
+    if (post) {
+        await Comment.deleteMany({ _id: { $in: post.comments } });
+        await Comment.deleteMany({ postId: post._id });
+        console.log("Associated comments deleted");
     }
 });
 

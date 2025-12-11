@@ -34,16 +34,15 @@ export const createPost = async(req,res)=>{
 }
 
 export const getAllPosts = async(req,res) =>{
-    try{
-        const posts = await Post.find().populate('userId','name username email profilePicture');
+        const posts = await Post.find()
+        .sort({ createdAt: -1 }) 
+        .populate('userId','name username email profilePicture');
         return res.json({posts:posts});
-    }catch(err){
-        return res.status(500).json({message:err.message});
-    }
+    
 }
 
 export const deletePost = async(req,res) =>{
-    try{
+    
         const {token,post_id} = req.body;
 
         const user = await User.findOne({token}).select("_id");
@@ -56,16 +55,11 @@ export const deletePost = async(req,res) =>{
 
         if(post.userId.toString() !== user._id.toString()) return res.status(401).json({message:"Unauthorized"});
 
-        await Post.deleteOne({_id:post_id});
+        await Post.findByIdAndDelete(post_id);
         return res.json({message:"Post deleted"});
-    }catch(err){
-        return res.status(500).json({message:err.message});
-    }
 }
 
 export const commentPost = async(req,res) =>{
-    try {
-
         const {token,post_id,commentBody} = req.body;
 
         const user = await User.findOne({token}).select("_id");
@@ -83,29 +77,26 @@ export const commentPost = async(req,res) =>{
         });
         await comment.save();
         return res.status(200).json({message:"Commented"});
-        
-    } catch (error) {
-        return res.status(500).json({message:error.message});
-    }
 }
 
 export const getCommentsByPost = async(req,res)=>{
-    try {
         
         const {post_id} = req.body;
 
         const post = await Post.findOne({_id:post_id});
 
         if(!post) return res.status(401).json({message:"Post not found"});
-        const comments = await Comment.find({ postId: post_id }).populate('userId','name username profilePicture');
-        return res.json({comments:comments.reverse()});
-    } catch (error) {
-        return res.status(500).json({message:error.message});
-    }
+
+        const comments = await Comment.find({ postId: post_id })
+        .populate('userId','name username profilePicture')
+        .sort({ _id: -1 }); // Naya comment phle dikhega
+        
+    return res.json({comments:comments});
+    
 }
 
 export const deleteCommentOfUser = async(req,res) =>{
-    try {
+ 
         
         const {token,comment_id} = req.body;
         const user = await User.findOne({token}).select("_id");
@@ -121,14 +112,9 @@ export const deleteCommentOfUser = async(req,res) =>{
         await Comment.deleteOne({_id:comment_id});
         return res.json({message:"Comment deleted"});
 
-    } catch (error) {
-        return res.status(500).json({message:error.message});
-    }
 }
 
 export const increament_likes = async(req,res)=>{
-    try {
-        
         const {post_id} = req.body;
 
         const post = await Post.findOne({_id:post_id});
@@ -140,9 +126,5 @@ export const increament_likes = async(req,res)=>{
         await post.save();
 
         return res.json({message:"Likes incremented"});
-
-    } catch (error) {
-        return res.status(500).json({message:error.message});
-    }
 }
 

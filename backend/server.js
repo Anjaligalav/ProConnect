@@ -8,7 +8,6 @@ import { v2 as cloudinary } from 'cloudinary';
 
 dotenv.config();
 
-// Add this Cloudinary configuration
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
   api_key: process.env.CLOUDINARY_API_KEY, 
@@ -26,8 +25,15 @@ app.use(userRoutes);
 
 // app.use(express.static("uploads"));
 
+app.use((err, req, res, next) => {
+    console.log("Error:", err.message); 
+    const status = err.status || 500;
+    const message = err.message || "Something went wrong";
+    return res.status(status).json({ message: message });
+});
+
 const start = async() =>{
-    const connectDB = await mongoose.connect("mongodb+srv://anjaligalav294:4EvWfnagCmYCVuKZ@apnaproconnect.h8tsp6g.mongodb.net/?retryWrites=true&w=majority&appName=apnaproconnect")
+    const connectDB = await mongoose.connect(process.env.mongodbURL)
     app.listen(9090 ,()=>{
         console.log("Mongodb Connect")
         console.log("server is running on port 9090")
