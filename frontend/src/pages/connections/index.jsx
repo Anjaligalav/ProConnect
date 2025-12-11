@@ -12,7 +12,7 @@ export default function MyConnectionsPage() {
   const router = useRouter();
   
   // Data extraction with safety
-  const currentUser = authState.user; 
+  const currentUser = authState.User; 
   const connectionList = authState.connectionRequest || []; 
 
   // --- LOGIC FIX: Current User ID nikalne ka sahi tareeka ---
