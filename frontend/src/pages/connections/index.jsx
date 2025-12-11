@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
-import UserLayout from '@/layout/UserLayout'
-import DashboardLayout from '@/layout/DashBoardLayout'
+import React, { useEffect } from 'react';
+import UserLayout from '@/layout/UserLayout';
+import DashboardLayout from '@/layout/DashBoardLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMyConnectionRequests, acceptConnectionRequest, getAboutUser } from '@/config/redux/action/authAction';
-import styles from "./style.module.css"
+import styles from "./style.module.css";
 import { useRouter } from 'next/router';
 
 export default function MyConnectionsPage() {
@@ -11,20 +11,30 @@ export default function MyConnectionsPage() {
   const authState = useSelector((state) => state.auth);
   const router = useRouter();
   
-  // Data extraction with safety
+  // FIX 1: Capital 'U' use kiya (Aapke reducer se match karne ke liye)
   const currentUser = authState.User; 
   const connectionList = authState.connectionRequest || []; 
 
-  // --- LOGIC FIX: Current User ID nikalne ka sahi tareeka ---
-  // Kabhi user object direct hota hai, kabhi profile ke andar. Dono check kar lo.
-  const currentUserId = currentUser?.userId?._id || currentUser?._id;
+  // --- SMART ID FINDER (Ye khud dhoondhega ID kahan hai) ---
+  const getMyUserId = () => {
+      if (!currentUser) return null;
+      // Case 1: Agar currentUser profile object hai (isme userId object hota hai)
+      if (currentUser.userId?._id) return currentUser.userId._id;
+      // Case 2: Agar currentUser seedha user object hai
+      if (currentUser._id) return currentUser._id;
+      return null;
+  };
+
+  const myId = getMyUserId();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if(token) {
         dispatch(getMyConnectionRequests({ token }));
         
+        // FIX 2: Yahan bhi Capital 'U' check kiya
         if(!authState.User) {
+            console.log("Fetching Profile...");
             dispatch(getAboutUser({ token }));
         }
     } else {
@@ -32,29 +42,16 @@ export default function MyConnectionsPage() {
     }
   }, [dispatch]);
 
-  // Loading State
-  if (!currentUser) {
-     return (
-        <UserLayout>
-           <DashboardLayout>
-              <div style={{padding: "50px", textAlign: "center"}}>
-                 <h3>Loading Profile...</h3>
-              </div>
-           </DashboardLayout>
-        </UserLayout>
-     );
-  }
-
-  // --- MAIN LOGIC: Lists ko separate karo ---
+  // --- FILTERS (Ab hum String convert karke compare karenge taaki type error na ho) ---
 
   // 1. RECEIVED: Request muj tak aayi hai (ConnectionId == Me)
   const receivedRequests = connectionList.filter(
-      (req) => req.status === null && req.connectionId?._id === currentUserId
+      (req) => req.status === null && String(req.connectionId?._id) === String(myId)
   );
 
   // 2. SENT: Request maine bheji hai (UserId == Me)
   const sentRequests = connectionList.filter(
-      (req) => req.status === null && req.userId?._id === currentUserId
+      (req) => req.status === null && String(req.userId?._id) === String(myId)
   );
 
   // 3. NETWORK: Jo dost ban chuke hain (Status == true)
@@ -67,6 +64,13 @@ export default function MyConnectionsPage() {
       <DashboardLayout>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
           
+          {/* Debugging: Agar ID load ho rahi hai */}
+          {!myId && (
+              <div style={{padding: "10px", backgroundColor: "#e2e3e5", color: "#383d41", borderRadius: "5px", fontSize: "0.8rem", textAlign:"center"}}>
+                  Loading User Data...
+              </div>
+          )}
+
           {/* --- PART 1: RECEIVED REQUESTS --- */}
           {receivedRequests.length > 0 && <h4>Received Requests</h4>}
           {receivedRequests.map((request, index) => (
@@ -74,7 +78,7 @@ export default function MyConnectionsPage() {
                  <div className={styles.userInfo}>
                     <img src={request.userId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
-                        <h1>{request.userId?.name}</h1>
+                        <h1>{request.userId?.name || "Unknown"}</h1>
                         <p style={{fontSize:"0.8rem"}}>Request from @{request.userId?.username}</p>
                     </div>
                  </div>
@@ -91,15 +95,14 @@ export default function MyConnectionsPage() {
               </div>
           ))}
 
-          {/* --- PART 2: SENT REQUESTS (Ab ye dikhega!) --- */}
+          {/* --- PART 2: SENT REQUESTS --- */}
           {sentRequests.length > 0 && <h4>Sent Requests (Pending)</h4>}
           {sentRequests.map((request, index) => (
               <div key={index} className={styles.userCard} style={{opacity: 0.7, backgroundColor: "#f9f9f9"}}>
                  <div className={styles.userInfo}>
-                    {/* Yahan hum ConnectionId (Jisko bheja) ki photo dikhayenge */}
                     <img src={request.connectionId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
-                        <h1>{request.connectionId?.name}</h1>
+                        <h1>{request.connectionId?.name || "Unknown"}</h1>
                         <p style={{fontSize:"0.8rem"}}>Request Sent to @{request.connectionId?.username}</p>
                     </div>
                  </div>
@@ -110,7 +113,7 @@ export default function MyConnectionsPage() {
           {/* --- PART 3: MY NETWORK --- */}
           {myNetwork.length > 0 && <h4>My Network</h4>}
           {myNetwork.map((request, index) => {
-                 const isSender = request.userId?._id === currentUserId;
+                 const isSender = String(request.userId?._id) === String(myId);
                  const friend = isSender ? request.connectionId : request.userId;
 
                  if (!friend) return null;
@@ -131,11 +134,11 @@ export default function MyConnectionsPage() {
           })}
 
           {/* --- EMPTY STATE --- */}
-          {receivedRequests.length === 0 && sentRequests.length === 0 && myNetwork.length === 0 && (
+          {myId && receivedRequests.length === 0 && sentRequests.length === 0 && myNetwork.length === 0 && (
               <div style={{textAlign: "center", marginTop: "40px"}}>
+                  <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" alt="No Connections" style={{width: "80px", opacity: 0.5, marginBottom: "15px"}} />
                   <h3>No Connections Yet</h3>
-                  <p style={{color: "gray"}}>Go to Discover to find people.</p>
-                  <button onClick={() => router.push("/discover")} style={{marginTop:"10px", padding:"10px 20px", cursor:"pointer"}}>Discover</button>
+                  <button onClick={() => router.push("/discover")} style={{marginTop:"10px", padding:"10px 20px", backgroundColor: "#0073b1", color: "white", border: "none", borderRadius: "5px", cursor:"pointer"}}>Discover People</button>
               </div>
           )}
 
