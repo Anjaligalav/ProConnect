@@ -1,7 +1,7 @@
 /* Card Container */
 .userCard {
     display: flex;
-    justify-content: space-between; /* Magic: Info left mein, Button right mein */
+    justify-content: space-between; /* Magic: Info Left, Button Right */
     align-items: center;
     width: 100%;
     padding: 1rem;
@@ -9,15 +9,16 @@
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08); /* Soft Shadow */
     border-radius: 10px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-bottom: 0.8rem; /* Cards ke beech gap */
 }
 
 .userCard:hover {
-    transform: translateY(-2px); /* Hover karne par thoda upar uthega */
+    transform: translateY(-2px); /* Hover effect */
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.12);
 }
 
-/* User Info Wrapper (Image + Text) */
+/* User Info Wrapper (Left Side) */
 .userInfo {
     display: flex;
     align-items: center;
@@ -27,15 +28,20 @@
 
 /* Image Styling */
 .profilePicture {
-    width: 3.5rem;  /* 6.5rem bohot bada tha, list ke liye 3.5rem best hai */
+    width: 3.5rem;  /* Perfect list size */
     height: 3.5rem;
     border-radius: 50%;
     object-fit: cover;
-    flex-shrink: 0; /* Ise shrink hone se rokta hai */
-    border: 2px solid #f0f0f0;
+    flex-shrink: 0; /* Photo kabhi pichkegi nahi */
+    border: 1px solid #e0e0e0;
 }
 
 /* Text Styling */
+.userInfo div {
+    display: flex;
+    flex-direction: column;
+}
+
 .userInfo h1 {
     font-size: 1rem;
     font-weight: 600;
@@ -52,29 +58,29 @@
     margin: 0;
 }
 
-/* Button Styling */
+/* Button Styling (Right Side) */
 .connectedButton {
     padding: 0.5rem 1.2rem;
-    background: #0073b1; /* LinkedIn Blue Color */
+    background: #0073b1; /* LinkedIn Blue */
     color: white;
     border: none;
     outline: none;
     border-radius: 20px; /* Pill Shape */
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: background 0.3s;
-    white-space: nowrap; /* Button ka text wrap na ho */
-    flex-shrink: 0;
+    white-space: nowrap;
+    flex-shrink: 0; /* Button shrink nahi hoga */
 }
 
 .connectedButton:hover {
-    background: #005582; /* Darker Blue on Hover */
+    background: #005582; /* Dark Blue on Hover */
 }
 
-/* Disabled Button (Pending state ke liye) */
+/* Disabled State (Pending Button ke liye) */
 .connectedButton:disabled {
-    background-color: #e0e0e0;
-    color: #888;
+    background-color: #6c757d; /* Grey color */
     cursor: default;
+    opacity: 1; /* Brightness full rahegi */
 }
