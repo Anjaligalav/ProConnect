@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react'
 import UserLayout from '@/layout/UserLayout'
 import DashboardLayout from '@/layout/DashBoardLayout'
-import { useDispatch } from 'react-redux';
-import { getMyConnectionRequests, acceptConnectionRequest } from '@/config/redux/action/authAction';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMyConnectionRequests, acceptConnectionRequest, getAboutUser } from '@/config/redux/action/authAction'; // getAboutUser import kiya
 import styles from "./style.module.css"
 import { useRouter } from 'next/router';
 
@@ -15,28 +14,44 @@ export default function MyConnectionsPage() {
   const currentUser = authState.user; 
 
   useEffect(() => {
-    dispatch(getMyConnectionRequests({ token: localStorage.getItem("token") }));
+    const token = localStorage.getItem("token");
+    if(token) {
+        // 1. Connections Lao
+        dispatch(getMyConnectionRequests({ token }));
+        
+        // 2. Loading Fix: Agar User Data nahi hai, toh fetch karo
+        if(!authState.user) {
+            dispatch(getAboutUser({ token }));
+        }
+    }
   }, []);
 
-  // --- FIX 1: SAFETY CHECK (CRASH ROKNE KE LIYE) ---
-  // Agar user load nahi hua, toh aage mat badho
+  // Safety Check
   if (!currentUser) {
      return (
         <UserLayout>
            <DashboardLayout>
               <div style={{padding: "20px", textAlign: "center"}}>
-                 <h3>Loading...</h3>
+                 <h3>Loading Profile...</h3>
               </div>
            </DashboardLayout>
         </UserLayout>
      );
   }
 
-  // Filters
-  const pendingRequests = authState.connectionRequest.filter(
+  // --- FILTERS ---
+  
+  // 1. Request MUJHE aayi hai (Main Receiver hu)
+  const receivedRequests = authState.connectionRequest.filter(
       (req) => req.status === null && req.connectionId?._id === currentUser._id
   );
 
+  // 2. Request MAINE bheji hai (Main Sender hu) -- NEW
+  const sentRequests = authState.connectionRequest.filter(
+      (req) => req.status === null && req.userId?._id === currentUser._id
+  );
+
+  // 3. Dost ban chuke hain (Accepted)
   const myNetwork = authState.connectionRequest.filter(
       (req) => req.status === true
   );
@@ -46,20 +61,18 @@ export default function MyConnectionsPage() {
       <DashboardLayout>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
           
-          {/* --- PART 1: PENDING REQUESTS --- */}
-          <h4>My Connections (Requests)</h4>
-          
-          {pendingRequests.length === 0 ? (
-             <p style={{color: "gray"}}>No Connection Request Pending</p>
+          {/* --- PART 1: RECEIVED REQUESTS (Accept Button) --- */}
+          <h4>Received Requests</h4>
+          {receivedRequests.length === 0 ? (
+             <p style={{color: "gray", fontSize: "0.9rem"}}>No new requests received.</p>
           ) : (
-             pendingRequests.map((request, index) => (
+             receivedRequests.map((request, index) => (
               <div key={index} className={styles.userCard}>
                  <div className={styles.userInfo}>
-                    {/* ? ka use kiya taaki crash na ho */}
-                    <img src={request.userId?.profilePicture} alt="" className={styles.profilePicture} />
+                    <img src={request.userId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
                         <h1>{request.userId?.name}</h1>
-                        <p>{request.userId?.email}</p>
+                        <p style={{fontSize:"0.8rem"}}>{request.userId?.username} • Sent you a request</p>
                     </div>
                  </div>
                  <button onClick={() => {
@@ -76,22 +89,41 @@ export default function MyConnectionsPage() {
             ))
           )}
 
-          {/* --- PART 2: MY NETWORK (Sirf tab dikhao jab dost hon) --- */}
+          {/* --- PART 2: SENT REQUESTS (Sirf dekhne ke liye) --- */}
+          <h4>Sent Requests (Pending)</h4>
+          {sentRequests.length === 0 ? (
+             <p style={{color: "gray", fontSize: "0.9rem"}}>No pending sent requests.</p>
+          ) : (
+             sentRequests.map((request, index) => (
+              <div key={index} className={styles.userCard} style={{opacity: 0.7}}>
+                 <div className={styles.userInfo}>
+                    {/* Yahan ConnectionId (Jisko bheja) dikhayenge */}
+                    <img src={request.connectionId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
+                    <div>
+                        <h1>{request.connectionId?.name}</h1>
+                        <p style={{fontSize:"0.8rem"}}>Request Sent to {request.connectionId?.username}</p>
+                    </div>
+                 </div>
+                 <button className={styles.connectedButton} disabled style={{backgroundColor: "gray", cursor: "default"}}>Pending</button>
+              </div>
+            ))
+          )}
+
+          {/* --- PART 3: MY NETWORK --- */}
           {myNetwork.length > 0 && (
             <>
               <h4>My Network</h4>
               {myNetwork.map((request, index) => {
-                 // Pata karo dost kaun hai
                  const isSender = request.userId?._id === currentUser._id;
                  const friend = isSender ? request.connectionId : request.userId;
 
-                 if (!friend) return null; // Safety
+                 if (!friend) return null;
 
                  return (
                    <div onClick={() => router.push(`/view_profile/${friend.username}`)} key={index} className={styles.userCard}>
                      <div style={{ display: "flex", alignItems: "center", gap: "1.2rem" }}>
                        <div className={styles.profilePicture}>
-                         <img src={friend.profilePicture} alt="" />
+                         <img src={friend.profilePicture || "/default.png"} alt="" />
                        </div>
                        <div className={styles.userInfo}>
                          <h1>{friend.name}</h1>
