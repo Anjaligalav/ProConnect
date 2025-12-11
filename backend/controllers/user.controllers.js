@@ -178,7 +178,7 @@ export const updateProfileData = async(req,res) =>{
 }
 
 
-export const getAllUserProfile = wrapAsync(async(req, res) => {
+export const getAllUserProfile = async(req, res) => {
     const token = req.query.token;
     const user = await User.findOne({token});
 
@@ -197,7 +197,7 @@ export const getAllUserProfile = wrapAsync(async(req, res) => {
         .populate('userId', 'name username email profilePicture');
         
     return res.json({ userProfile });
-});
+};
 
 
 export const downloadProfile = async (req, res) => {
