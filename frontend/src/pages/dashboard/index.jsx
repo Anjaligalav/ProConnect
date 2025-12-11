@@ -36,14 +36,24 @@ export default function DashBoardComponent() {
   };
 
   useEffect(() => {
-    if (!authState.isTokenThere) {
-      dispatch(getAllPosts());
-      dispatch(getAboutUser({ token: localStorage.getItem("token") }));
+    // 1. Token nikalo
+    const token = localStorage.getItem("token");
+
+    // 2. Agar token hai, toh Posts hamesha fetch karo (Taaki naye posts dikhein)
+    if (token) {
+       dispatch(getAllPosts());
+       
+       // 3. Agar User data Redux mein nahi hai, toh use bhi fetch karo
+       if (!authState.User) {
+          dispatch(getAboutUser({ token: token }));
+       }
     }
+
+    // 4. Profiles wala logic same rahega
     if (!authState.all_profiles_fetched) {
       dispatch(getAllUsers());
     }
-  }, [authState.isTokenThere]);
+  }, []);
 
   if (authState.User) {
     return (
