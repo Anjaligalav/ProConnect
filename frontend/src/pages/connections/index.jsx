@@ -24,7 +24,7 @@ export default function MyConnectionsPage() {
     if(token) {
         dispatch(getMyConnectionRequests({ token }));
         
-        if(!authState.user) {
+        if(!authState.User) {
             dispatch(getAboutUser({ token }));
         }
     } else {
