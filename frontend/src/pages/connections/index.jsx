@@ -11,55 +11,53 @@ export default function MyConnectionsPage() {
   const authState = useSelector((state) => state.auth);
   const router = useRouter();
   
+  // Data extraction with safety
   const currentUser = authState.user; 
-  // Safety: Agar connectionRequest undefined hai to empty array maano
   const connectionList = authState.connectionRequest || []; 
+
+  // --- LOGIC FIX: Current User ID nikalne ka sahi tareeka ---
+  // Kabhi user object direct hota hai, kabhi profile ke andar. Dono check kar lo.
+  const currentUserId = currentUser?.userId?._id || currentUser?._id;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    
     if(token) {
-        // 1. Hamesha Connection Requests fetch karo (Refresh hone par bhi)
         dispatch(getMyConnectionRequests({ token }));
         
-        // 2. Agar User Data Redux mein nahi hai, toh fetch karo
         if(!authState.user) {
-            console.log("Fetching User Data..."); // Debugging ke liye
             dispatch(getAboutUser({ token }));
         }
     } else {
-        // Agar token hi nahi hai, Login par bhej do
         router.push("/login");
     }
-  }, [dispatch]); // Dependency mein dispatch daalo (Best Practice)
+  }, [dispatch]);
 
-  // --- SHORTCUT: Agar User Load ho raha hai ---
+  // Loading State
   if (!currentUser) {
      return (
         <UserLayout>
            <DashboardLayout>
               <div style={{padding: "50px", textAlign: "center"}}>
                  <h3>Loading Profile...</h3>
-                 <p style={{fontSize: "12px", color: "gray"}}>Please wait while we fetch your data</p>
               </div>
            </DashboardLayout>
         </UserLayout>
      );
   }
 
-  // --- FILTERS ---
+  // --- MAIN LOGIC: Lists ko separate karo ---
 
-  // 1. Received (Jo mujhe aayi hain)
+  // 1. RECEIVED: Request muj tak aayi hai (ConnectionId == Me)
   const receivedRequests = connectionList.filter(
-      (req) => req.status === null && req.connectionId?._id === currentUser._id
+      (req) => req.status === null && req.connectionId?._id === currentUserId
   );
 
-  // 2. Sent (Jo maine bheji hain)
+  // 2. SENT: Request maine bheji hai (UserId == Me)
   const sentRequests = connectionList.filter(
-      (req) => req.status === null && req.userId?._id === currentUser._id
+      (req) => req.status === null && req.userId?._id === currentUserId
   );
 
-  // 3. Network (Dost)
+  // 3. NETWORK: Jo dost ban chuke hain (Status == true)
   const myNetwork = connectionList.filter(
       (req) => req.status === true
   );
@@ -69,7 +67,7 @@ export default function MyConnectionsPage() {
       <DashboardLayout>
         <div style={{ display: "flex", flexDirection: "column", gap: "1.2rem" }}>
           
-          {/* --- Section 1: RECEIVED --- */}
+          {/* --- PART 1: RECEIVED REQUESTS --- */}
           {receivedRequests.length > 0 && <h4>Received Requests</h4>}
           {receivedRequests.map((request, index) => (
               <div key={index} className={styles.userCard}>
@@ -87,33 +85,32 @@ export default function MyConnectionsPage() {
                         action: "accept" 
                     }))
                     .then(() => {
-                        // Instant Refresh
                         dispatch(getMyConnectionRequests({ token: localStorage.getItem("token") }));
                     });
                  }} className={styles.connectedButton}>Accept</button>
               </div>
           ))}
 
-          {/* --- Section 2: SENT (PENDING) --- */}
+          {/* --- PART 2: SENT REQUESTS (Ab ye dikhega!) --- */}
           {sentRequests.length > 0 && <h4>Sent Requests (Pending)</h4>}
           {sentRequests.map((request, index) => (
               <div key={index} className={styles.userCard} style={{opacity: 0.7, backgroundColor: "#f9f9f9"}}>
                  <div className={styles.userInfo}>
+                    {/* Yahan hum ConnectionId (Jisko bheja) ki photo dikhayenge */}
                     <img src={request.connectionId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
                         <h1>{request.connectionId?.name}</h1>
                         <p style={{fontSize:"0.8rem"}}>Request Sent to @{request.connectionId?.username}</p>
                     </div>
                  </div>
-                 <button className={styles.connectedButton} disabled style={{backgroundColor: "gray", cursor: "not-allowed"}}>Pending</button>
+                 <button className={styles.connectedButton} disabled style={{backgroundColor: "gray", cursor: "default", border:"none"}}>Pending</button>
               </div>
           ))}
 
-          {/* --- Section 3: MY NETWORK --- */}
+          {/* --- PART 3: MY NETWORK --- */}
           {myNetwork.length > 0 && <h4>My Network</h4>}
           {myNetwork.map((request, index) => {
-                 // Logic to find Friend
-                 const isSender = request.userId?._id === currentUser._id;
+                 const isSender = request.userId?._id === currentUserId;
                  const friend = isSender ? request.connectionId : request.userId;
 
                  if (!friend) return null;
@@ -133,11 +130,12 @@ export default function MyConnectionsPage() {
                  );
           })}
 
-          {/* --- Section 4: EMPTY STATE (Agar kuch nahi hai) --- */}
+          {/* --- EMPTY STATE --- */}
           {receivedRequests.length === 0 && sentRequests.length === 0 && myNetwork.length === 0 && (
-              <div style={{textAlign: "center", marginTop: "50px"}}>
+              <div style={{textAlign: "center", marginTop: "40px"}}>
                   <h3>No Connections Yet</h3>
-                  <button onClick={() => router.push("/discover")} style={{marginTop:"10px", padding:"10px 20px", cursor:"pointer"}}>Go to Discover</button>
+                  <p style={{color: "gray"}}>Go to Discover to find people.</p>
+                  <button onClick={() => router.push("/discover")} style={{marginTop:"10px", padding:"10px 20px", cursor:"pointer"}}>Discover</button>
               </div>
           )}
 
