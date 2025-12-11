@@ -16,7 +16,7 @@ export default function DiscoverPage() {
     const authState = useSelector((state) => state.auth);
     useEffect(() => {
         if(!authState.all_profiles_fetched){
-            dispatch(getAllUsers())
+            dispatch(getAllUsers({token:localStorage.getItem("token")}))
         }
     },[])
     const router = useRouter();

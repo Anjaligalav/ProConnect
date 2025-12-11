@@ -177,10 +177,27 @@ export const updateProfileData = async(req,res) =>{
 
 }
 
-export const getAllUserProfile = async(req,res)=>{
-    const userProfile = await Profile.find().populate('userId','name username email profilePicture');
-    return res.json({userProfile});
-}
+
+export const getAllUserProfile = wrapAsync(async(req, res) => {
+    const token = req.query.token;
+    const user = await User.findOne({token});
+
+    if(!user) return res.status(404).json({message:"User not found"});
+    
+    let query = {}; 
+
+    if (token) {
+        const currentUser = await User.findOne({ token });
+        if (currentUser) {
+            query = { userId: { $ne: currentUser._id } };
+        }
+    }
+
+    const userProfile = await Profile.find(query)
+        .populate('userId', 'name username email profilePicture');
+        
+    return res.json({ userProfile });
+});
 
 
 export const downloadProfile = async (req, res) => {
