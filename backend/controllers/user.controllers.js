@@ -244,7 +244,15 @@ export const getMyConnectionRequests = async(req,res)=>{
 
     if(!user) return res.status(404).json({message:"User not found"});
 
-    const connections = await ConnectionRequest.find({userId:user._id}).populate('connectionId','name username email profilePicture');
+    const connections = await ConnectionRequest.find({
+        $or: [
+            { userId: user._id },       // Maine bheji thi
+            { connectionId: user._id }  // Mujhe aayi thi
+        ]
+    })
+    // Dono users ka data populate karein taaki frontend decide kar sake kaun dost hai
+    .populate('userId', 'name username email profilePicture')
+    .populate('connectionId', 'name username email profilePicture');
     return res.json(connections);
 }
 
