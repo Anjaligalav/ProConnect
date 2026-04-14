@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
-import { createPost, getAllPosts, deletePost, incrementLikes, getAllComments, postComment } from "@/config/redux/action/postAction";
+import { createPost, getAllPosts, deletePost, incrementLikes, getAllComments, postComment, enhancePost } from "@/config/redux/action/postAction";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { getAboutUser, getAllUsers } from "@/config/redux/action/authAction";
@@ -21,6 +21,7 @@ export default function DashBoardComponent() {
   const [postContent, setPostContent] = useState("");
   const [fileContent, setFileContent] = useState();
   const [commentText, setCommentText] = useState("");
+  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
 
   const handleUpload = async () => {
     await dispatch(
@@ -32,7 +33,18 @@ export default function DashBoardComponent() {
     );
     setPostContent("");
     setFileContent(null);
+    setIsPostModalOpen(false); // Modal close karo upload ke baad
     dispatch(getAllPosts());
+  };
+
+  // AI Enhance Handler — User ka chhota prompt AI ko bhejega
+  const handleAIEnhance = async () => {
+    if (!postContent.trim()) return; // Agar kuch nahi likha toh kuch mat karo
+    const result = await dispatch(enhancePost({ prompt: postContent }));
+    // Agar AI ne successfully post generate kiya toh textarea mein daal do
+    if (result.payload && result.payload.enhancedPost) {
+      setPostContent(result.payload.enhancedPost);
+    }
   };
 
   useEffect(() => {
@@ -61,50 +73,92 @@ export default function DashBoardComponent() {
         <DashboardLayout>
           <div className={styles.scrollComponent}>
             <div className={styles.wrapper}>
-              <div className={styles.createPostContainer}>
+              {/* Naya Trigger Button (LinkedIn Style) */}
+              <div 
+                className={styles.createPostTrigger} 
+                onClick={() => setIsPostModalOpen(true)}
+              >
                 <img
                   className={styles.userProfile}
                   src={authState.User.userId.profilePicture}
                   alt="Profile"
                 />
-                <textarea
-                  onChange={(e) => setPostContent(e.target.value)}
-                  placeholder="What's in your mind"
-                  value={postContent}
-                  className={styles.textarea}
-                  name=""
-                  id=""
-                ></textarea>
-                <label htmlFor="fileUpload">
-                  <div className={styles.FAB}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-6"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 4.5v15m7.5-7.5h-15"
-                      />
-                    </svg>
-                  </div>
-                </label>
-                {postContent.length > 0 && (
-                  <div onClick={handleUpload} className={styles.uploadButton}>
-                    Post
-                  </div>
-                )}
-                <input
-                  onChange={(e) => setFileContent(e.target.files[0])}
-                  type="file"
-                  hidden
-                  id="fileUpload"
-                />
+                <div className={styles.triggerText}>
+                  Start a post, {authState.User.userId.name}...
+                </div>
               </div>
+
+              {/* Naya Pop-up Modal */}
+              {isPostModalOpen && (
+                <div className={styles.postModalContainer} onClick={() => setIsPostModalOpen(false)}>
+                  <div className={styles.postModalBody} onClick={(e) => e.stopPropagation()}>
+                    
+                    <div className={styles.modalHeader}>
+                      <h2>Create a post</h2>
+                      <button className={styles.closeModalBtn} onClick={() => setIsPostModalOpen(false)}>✖</button>
+                    </div>
+
+                    <div className={styles.modalUserInfo}>
+                      <img src={authState.User.userId.profilePicture} alt="Profile" />
+                      <p>{authState.User.userId.name}</p>
+                    </div>
+
+                    <textarea
+                      onChange={(e) => setPostContent(e.target.value)}
+                      placeholder="What do you want to talk about?"
+                      value={postContent}
+                      className={styles.modalTextarea}
+                    ></textarea>
+
+                    {fileContent && (
+                      <p style={{ color: "green", fontSize: "0.9rem", margin: "0" }}>
+                        Attached: {fileContent.name}
+                      </p>
+                    )}
+
+                    <div className={styles.modalFooter}>
+                      <div className={styles.modalActions}>
+                        <label htmlFor="fileUploadModal">
+                          <div className={styles.FAB}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                          </div>
+                        </label>
+                        <input
+                          onChange={(e) => setFileContent(e.target.files[0])}
+                          type="file"
+                          hidden
+                          id="fileUploadModal"
+                        />
+
+                        {/* ✨ AI Enhance Button */}
+                        {postContent.length > 0 && (
+                          <div
+                            onClick={handleAIEnhance}
+                            className={styles.aiEnhanceButton}
+                            title="AI se professional post banao"
+                          >
+                            {postState.aiLoading ? (
+                              <div className={styles.aiSpinner}></div>
+                            ) : (
+                              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="white" style={{width: "24px", height: "24px", minWidth: "24px", minHeight: "24px", flexShrink: 0}}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09ZM18.259 8.715 18 9.75l-.259-1.035a3.375 3.375 0 0 0-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 0 0 2.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 0 0 2.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 0 0-2.455 2.456ZM16.894 20.567 16.5 21.75l-.394-1.183a2.25 2.25 0 0 0-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 0 0 1.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 0 0 1.423 1.423l1.183.394-1.183.394a2.25 2.25 0 0 0-1.423 1.423Z" />
+                              </svg>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {postContent.length > 0 && (
+                        <div onClick={handleUpload} className={styles.uploadButton}>
+                          Post
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className={styles.postContainer}>
                 {postState.posts.map((post) => {

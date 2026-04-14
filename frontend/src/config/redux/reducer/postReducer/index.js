@@ -1,5 +1,5 @@
 const { createSlice } = require("@reduxjs/toolkit")
-import { createPost, getAllPosts, deletePost, incrementLikes, getAllComments, postComment } from "../../action/postAction"
+import { createPost, getAllPosts, deletePost, incrementLikes, getAllComments, postComment, enhancePost } from "../../action/postAction"
 
 const initialState = {
     posts : [],
@@ -9,7 +9,10 @@ const initialState = {
     message:"",
     postfetched:false,
     comments:[],
-    postId:""
+    postId:"",
+    aiLoading: false,
+    aiError: false,
+    aiMessage: ""
 }
 
 const postSlice = createSlice({
@@ -32,7 +35,7 @@ const postSlice = createSlice({
                 state.isError = false;
                 state.isSuccess = true;
                 state.postfetched=true;
-                state.posts = action.payload.posts.reverse();
+                state.posts = action.payload.posts;
             })
             .addCase(getAllPosts.rejected, (state, action) => {
                 state.isLoading = false;
@@ -94,6 +97,24 @@ const postSlice = createSlice({
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
+            })
+            // AI Enhance Post — Loading state
+            .addCase(enhancePost.pending, (state) => {
+                state.aiLoading = true;
+                state.aiError = false;
+                state.aiMessage = "AI is thinking...";
+            })
+            // AI Enhance Post — Success
+            .addCase(enhancePost.fulfilled, (state, action) => {
+                state.aiLoading = false;
+                state.aiError = false;
+                state.aiMessage = "Post enhanced!";
+            })
+            // AI Enhance Post — Error
+            .addCase(enhancePost.rejected, (state, action) => {
+                state.aiLoading = false;
+                state.aiError = true;
+                state.aiMessage = action.payload?.message || "AI enhancement failed";
             })
     }
 })

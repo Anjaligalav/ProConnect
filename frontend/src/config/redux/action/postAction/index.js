@@ -105,3 +105,22 @@ export const postComment = createAsyncThunk(
         return thunkAPI.rejectWithValue(error.res.data);
     }
 })
+
+// AI Post Enhance — User ka chhota prompt bhejo, AI se professional post wapas aayega
+export const enhancePost = createAsyncThunk(
+    "post/enhancePost",
+    async(data, thunkAPI) => {
+        try {
+            const res = await clientServer.post(`/ai/enhance-post`, {
+                token: localStorage.getItem("token"),
+                prompt: data.prompt
+            });
+            return thunkAPI.fulfillWithValue(res.data);
+        } catch (error) {
+            return thunkAPI.rejectWithValue(
+                error.response?.data || { message: "AI service failed" }
+            );
+        }
+    }
+)
+

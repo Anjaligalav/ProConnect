@@ -4,6 +4,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 import postRoutes from "./routes/posts.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import aiRoutes from "./routes/ai.routes.js";
 import { v2 as cloudinary } from 'cloudinary'; 
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json());
 
 app.use(postRoutes);
 app.use(userRoutes);
+app.use(aiRoutes);
 
 // app.use(express.static("uploads"));
 

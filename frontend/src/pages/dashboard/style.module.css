@@ -23,15 +23,14 @@
 }
 
 .uploadButton{
-    position: absolute;
-    right: 0rem;
-    bottom: -50%;
     cursor: pointer;
     background-color: rgb(81, 168, 230);
     color: white;
     padding-inline: 1.2rem;
     border-radius: 10px;
     padding-block: 0.5rem;
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 .createPostContainer > textarea{
     width: 100%;
@@ -43,6 +42,7 @@
     color: white;
     justify-content: center;
     display: flex;
+    flex-shrink: 0;
 }
 .FAB > svg{
     width: fit-content;
@@ -243,3 +243,386 @@
     }
 }
 
+/* AI Enhance Button — Sparkle icon wala button */
+.aiEnhanceButton {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    color: white;
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    flex-shrink: 0;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid rgb(97, 99, 100);
+    outline: none;
+}
+
+.singleCard{
+    
+    width: 100%;
+    border-radius: 10px 10px 0px 0px;
+    border-bottom: 1px solid rgb(97, 99, 100);
+    
+}
+
+.singleCard_profileContainer{
+    display: flex;
+    align-items: flex-start;
+    gap: 1.2rem;
+    padding: 1.2rem;
+    padding-right: 3.4rem;
+}
+
+.singleCard_profileContainer > img{
+    width: 10%;
+    border-radius: 50%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+
+    
+}
+.singleCard_image{
+    width: 100%;
+    padding-top: 0.6rem;
+    height: fit-content;
+    overflow: hidden;
+}
+
+.singleCard_image > img{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.optionsContainer{
+    display: flex;
+    height: 20%;
+    width: 100%;
+    justify-content: space-between;
+    padding-block: 0.6rem;
+}
+
+.singleOption_optionsContainer > svg{
+    height: 100%;
+    width: 8%;
+    cursor: pointer;
+    min-width: 1rem;
+}
+
+.singleOption_optionsContainer{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    
+}
+
+.commentsContainer{
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 2;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.allCommentsContainer{
+    /* width: 40vw; */
+    min-width: 40svw;
+    height: 80vh;
+    max-width: 1120px;
+    background: white;
+    color: black;
+    border-radius: 10px;
+    padding: 1.4rem;
+    position: relative;    
+}
+
+.postCommentContainer{
+    position: absolute;
+    bottom: 1.2rem;
+    left: 1.2rem;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    justify-content: center;
+    
+    
+}
+
+.postCommentContainer > input{
+    flex: 0.9;
+    padding-inline: 1.5rem;
+    padding-block: 1.2rem;
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(217, 216, 215);
+    outline: none;
+    
+}
+
+.postCommentContainer >input:focus{
+    border: 1px solid rgb(122, 127, 132);
+}
+
+.postCommentContainer_commentBtn{
+    flex: 0.1;
+    width: fit-content;
+    cursor: pointer;
+    background: rgb(100, 175, 236);
+    color: white;
+    padding-inline: 1.5rem;
+    padding-block: 1.2rem;
+    text-align: center;
+    border-radius: 0.5rem;
+    outline: none;
+    border: none;
+    text-decoration: none;
+    
+}
+
+.singleComment {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.singleComment_profileContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.commentHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+
+.commentHeader p {
+  margin: 0;
+}
+
+.commentName {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.commentUsername {
+  color: gray;
+  font-size: 0.9rem;
+}
+
+.commentBody {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+
+@media only screen and (max-width: 600px) {
+    .allCommentsContainer{
+        width: 90%;
+    }
+}
+
+/* AI Enhance Button — Sparkle icon wala button */
+.aiEnhanceButton {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    color: white;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6);
+}
+
+/* AI Loading Spinner */
+.aiSpinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* =========================================
+   Create Post Modal Styles (LinkedIn Style)
+   ========================================= */
+
+.createPostTrigger {
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    gap: 1rem;
+    align-items: center;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-bottom: 2rem;
+}
+
+.createPostTrigger:hover {
+    background: #f3f2ef;
+}
+
+.createPostTrigger img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.triggerText {
+    flex: 1;
+    color: #666;
+    font-size: 1.1rem;
+    padding: 0.8rem 1.2rem;
+    background: #f3f2ef;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    text-align: left;
+    font-weight: 500;
+}
+
+.postModalContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 5svh;
+}
+
+.postModalBody {
+    width: 95%;
+    max-width: 600px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: modalPop 0.3s ease-out;
+}
+
+@keyframes modalPop {
+    0% { opacity: 0; transform: scale(0.95) translateY(-20px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.closeModalBtn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    transition: background 0.2s;
+}
+
+.closeModalBtn:hover {
+    background: #f3f2ef;
+    color: #000;
+}
+
+.modalUserInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.modalUserInfo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.modalUserInfo p {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin: 0;
+    color: #1a1a1a;
+}
+
+.modalTextarea {
+    width: 100%;
+    min-height: 200px; /* Big textarea */
+    border: none;
+    outline: none;
+    font-size: 1.2rem;
+    resize: none;
+    background: transparent;
+    color: #333;
+}
+
+.modalTextarea::placeholder {
+    color: #999;
+}
+
+.modalFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalActions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}

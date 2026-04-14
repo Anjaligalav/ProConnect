@@ -56,7 +56,12 @@ export default function MyConnectionsPage() {
           {/* --- PART 1: RECEIVED REQUESTS --- */}
           {receivedRequests.length > 0 && <h4>Received Requests</h4>}
           {receivedRequests.map((request, index) => (
-              <div key={index} className={styles.userCard}>
+              <div 
+                key={index} 
+                className={styles.userCard}
+                // Feature Added: Card pe click karte hi Profile khulegi
+                onClick={() => router.push(`/view_profile/${request.userId?.username}`)}
+              >
                  <div className={styles.userInfo}>
                     <img src={request.userId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
@@ -64,7 +69,8 @@ export default function MyConnectionsPage() {
                         <p style={{fontSize:"0.8rem"}}>Request from @{request.userId?.username}</p>
                     </div>
                  </div>
-                 <button onClick={() => {
+                 <button onClick={(e) => {
+                    e.stopPropagation(); // IMPORTNT: Button dabane par profile mat kholo, bas accept karo
                     dispatch(acceptConnectionRequest({ 
                         token: localStorage.getItem("token"), 
                         connectionId: request._id, 
@@ -80,7 +86,12 @@ export default function MyConnectionsPage() {
           {/* --- PART 2: SENT REQUESTS --- */}
           {sentRequests.length > 0 && <h4>Sent Requests (Pending)</h4>}
           {sentRequests.map((request, index) => (
-              <div key={index} className={styles.userCard}>
+              <div 
+                key={index} 
+                className={styles.userCard}
+                // Feature Added: Jisko bheja hai uski profile dekho
+                onClick={() => router.push(`/view_profile/${request.connectionId?.username}`)}
+              >
                  <div className={styles.userInfo}>
                     <img src={request.connectionId?.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                     <div>
@@ -92,7 +103,7 @@ export default function MyConnectionsPage() {
               </div>
           ))}
 
-          {/* --- PART 3: MY NETWORK (FIXED LAYOUT) --- */}
+          {/* --- PART 3: MY NETWORK --- */}
           {myNetwork.length > 0 && <h4>My Network</h4>}
           {myNetwork.map((request, index) => {
                  const isSender = String(request.userId?._id) === String(myId);
@@ -101,8 +112,11 @@ export default function MyConnectionsPage() {
                  if (!friend) return null;
 
                  return (
-                   <div onClick={() => router.push(`/view_profile/${friend.username}`)} key={index} className={styles.userCard}>
-                     {/* Yahan maine structure ko waisa hi banaya hai jaisa Received Request ka hai */}
+                   <div 
+                    onClick={() => router.push(`/view_profile/${friend.username}`)} 
+                    key={index} 
+                    className={styles.userCard}
+                   >
                      <div className={styles.userInfo}>
                        <img src={friend.profilePicture || "/default.png"} alt="" className={styles.profilePicture} />
                        <div>
