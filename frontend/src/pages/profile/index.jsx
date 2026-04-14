@@ -99,7 +99,7 @@ export default function ProfilePage() {
           <div className={styles.profileContainerDetails}>
             <div style={{display:"flex",gap:"0.7rem"}}>
               
-              <div style={{flex:"0.8"}}>
+              <div style={{flex:"0.75"}}>
                 
                 <div style={{display:"flex",width:"fit-content",alignItems:"center",gap:"1.2rem"}}>
                   <input className={styles.nameEdit} type="text" value={userProfile.userId.name} onChange={(e)=>{
@@ -125,20 +125,17 @@ export default function ProfilePage() {
 
               
               
-              <div style={{flex:"0.2"}}>
+              <div style={{flex:"0.25"}}>
                 <h3>Recent Activity</h3>
                 {userPosts.map((post) => {
                   return(
                     <div key={post._id} className={styles.posCard}>
-                      <div className={styles.card}>
-                        <div className={styles.card_profileContainer}>
-                          {post.media !== ""?
-                          <img className={styles.card_profile} src={post.media} alt="" />:
-                          <div style={{width:"3.4rem",height:"3.4rem"}}></div>}
-
-                          <p>{post.body}</p>
+                        <div className={styles.recentActivityCard}>
+                          {post.media !== "" && (
+                            <img className={styles.recentActivityMedia} src={post.media} alt="" />
+                          )}
+                          <p className={styles.recentActivityText}>{post.body}</p>
                         </div>
-                      </div>
                     </div> 
                   )
                 })}

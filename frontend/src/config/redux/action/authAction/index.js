@@ -56,7 +56,7 @@ export const getAboutUser = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 
@@ -71,7 +71,7 @@ export const getAllUsers = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 
@@ -89,7 +89,7 @@ export const sendConnectionRequest = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 
@@ -103,7 +103,7 @@ export const getConnectionRequests = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 
@@ -117,7 +117,7 @@ export const getMyConnectionRequests = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 
@@ -135,7 +135,7 @@ export const acceptConnectionRequest = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response.data);
     }
 })
 

@@ -17,6 +17,14 @@ export default function DashboardLayout({ children }) {
     dispatch(setTokenIsThere());
   }, []);
 
+  useEffect(() => {
+    // Agar humne api call ki aur token invalid/old nikla
+    if (authState.isError && authState.message?.message === "User not found") {
+      localStorage.removeItem("token");
+      router.push("/login");
+    }
+  }, [authState.isError, authState.message, router]);
+
   return (
     <div className={styles.container}>
       <div className={styles.homeContainer}>

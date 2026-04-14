@@ -98,6 +98,16 @@ const authSlice = createSlice({
                 };
                 
             })
+            .addCase(getAboutUser.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(getAllUsers.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
 
             .addCase(getConnectionRequests.fulfilled, (state, action) => {
                 state.isLoading = false;

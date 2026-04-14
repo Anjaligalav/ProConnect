@@ -63,7 +63,7 @@ export default function DashBoardComponent() {
 
     // 4. Profiles wala logic same rahega
     if (!authState.all_profiles_fetched) {
-      dispatch(getAllUsers());
+      dispatch(getAllUsers({ token: localStorage.getItem("token") }));
     }
   }, []);
 

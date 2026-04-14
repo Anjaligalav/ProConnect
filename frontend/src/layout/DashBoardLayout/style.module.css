@@ -14,6 +14,14 @@
     align-items: flex-start;
     gap: 1.2rem;
     border-right: 1px solid rgb(222, 222, 222);
+    position: sticky;
+    top: 20px;
+    height: calc(100vh - 20px);
+    overflow-y: auto;
+}
+/* Hide scrollbar for clean look */
+.homeContainer_leftbar::-webkit-scrollbar {
+    display: none;
 }
 .sideBarOptions{
     display: flex;
@@ -37,6 +45,14 @@
 .homeContainer_extraContainer{
     border-left: 1px solid rgb(222, 222, 222);
     padding-left: 1.2rem;
+    position: sticky;
+    top: 20px;
+    height: calc(100vh - 20px);
+    overflow-y: auto;
+}
+/* Hide scrollbar for clean look */
+.homeContainer_extraContainer::-webkit-scrollbar {
+    display: none;
 }
 
 .homeContainer_feedContainer{
