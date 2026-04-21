@@ -12,7 +12,7 @@ export const getAllPosts = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -37,7 +37,7 @@ export const createPost = createAsyncThunk(
         else return thunkAPI.rejectWithValue("Post not uploaded");
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -54,7 +54,7 @@ export const deletePost = createAsyncThunk(
         return thunkAPI.fulfillWithValue("Post deleted");
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -68,7 +68,7 @@ export const incrementLikes = createAsyncThunk(
         return thunkAPI.fulfillWithValue("Likes incremented");
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })  
 
@@ -86,7 +86,7 @@ export const getAllComments = createAsyncThunk(
         });
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -102,7 +102,7 @@ export const postComment = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.res.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 

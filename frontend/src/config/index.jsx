@@ -1,10 +1,12 @@
 const {default:axios} = require("axios");
 
-// Local development ke liye ye use karo:
-export const BASE_URL = "http://localhost:9090";
-
-// Production/Deployed URL (Render):
-// export const BASE_URL = "https://proconnectlinkedinclone-zw86.onrender.com";
+// Automatically use the correct URL based on environment
+// Development (localhost) -> localhost:9090
+// Production (Vercel)    -> Render backend URL
+export const BASE_URL =
+    process.env.NODE_ENV === "production"
+        ? "https://proconnectlinkedinclone-zw86.onrender.com"
+        : "http://localhost:9090";
 
 export const clientServer = axios.create({
     baseURL: BASE_URL

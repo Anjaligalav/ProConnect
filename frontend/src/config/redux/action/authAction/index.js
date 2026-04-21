@@ -23,7 +23,7 @@ export const loginUser = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data.token);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -40,7 +40,7 @@ export const registerUser = createAsyncThunk(
             return res.data;
 
         }catch(error){
-            return thunkAPI.rejectWithValue(error.response.data);
+            return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
         }
     }
 )
@@ -56,7 +56,7 @@ export const getAboutUser = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -71,7 +71,7 @@ export const getAllUsers = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -89,7 +89,7 @@ export const sendConnectionRequest = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -103,7 +103,7 @@ export const getConnectionRequests = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -117,7 +117,7 @@ export const getMyConnectionRequests = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
@@ -135,7 +135,7 @@ export const acceptConnectionRequest = createAsyncThunk(
         return thunkAPI.fulfillWithValue(res.data);
     
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response?.data || { message: error.message || "Server not reachable" });
     }
 })
 
