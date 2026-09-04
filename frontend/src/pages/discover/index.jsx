@@ -26,7 +26,7 @@ export default function DiscoverPage() {
             <div>
               <h1>Discoverpage</h1>
               <div className={styles.allUserProfile}>
-                {authState.all_profiles_fetched && authState.all_users.map((user,index) => {
+                {authState.all_profiles_fetched && authState.all_users.filter((user) => user.userId).map((user,index) => {
                   return (
                     <div onClick={() => {
                       router.push(`/view_profile/${user.userId.username}`);

@@ -167,7 +167,7 @@ export default function DashBoardComponent() {
                       <div className={styles.singleCard_profileContainer}>
                         <img
                           className={styles.userProfile}
-                          src={post.userId.profilePicture}
+                          src={post.userId?.profilePicture}
                           alt="Profile"
                         />
                         <div
@@ -175,9 +175,9 @@ export default function DashBoardComponent() {
                         >
                           <div style={{ display: "flex",gap:"1.2rem", justifyContent:"space-between" }}>
                               <p style={{ fontWeight: "bold" }}>
-                              {post.userId.name}
+                              {post.userId?.name || "Deleted user"}
                             </p>
-                            {post.userId._id === authState.User.userId._id && 
+                            {post.userId?._id === authState.User?.userId?._id && 
                               <div onClick={async() =>{
                                 await dispatch(deletePost({post_id:post._id}));
                                 await dispatch(getAllPosts());
@@ -202,7 +202,7 @@ export default function DashBoardComponent() {
                           </div>
 
                           <p style={{ color: "gray" }}>
-                            @{post.userId.username}
+                            @{post.userId?.username}
                           </p>
                           <p style={{ paddingTop: "1.2rem" }}>{post.body}</p>
                           <div>
@@ -278,13 +278,13 @@ export default function DashBoardComponent() {
                           <div className={styles.singleComment} key={index}>
                             <img
                               style={{ width: "50px", height: "50px", borderRadius: "50%" }}
-                              src={comment.userId.profilePicture}
+                              src={comment.userId?.profilePicture}
                               alt=""
                             />
                             <div className={styles.singleComment_profileContainer}>
                               <div className={styles.commentHeader}>
-                                <p className={styles.commentName}>{comment.userId.name}</p>
-                                <p className={styles.commentUsername}>@{comment.userId.username}</p>
+                                <p className={styles.commentName}>{comment.userId?.name || "Deleted user"}</p>
+                                <p className={styles.commentUsername}>@{comment.userId?.username}</p>
                               </div>
                               <p className={styles.commentBody}>{comment.body}</p>
                             </div>

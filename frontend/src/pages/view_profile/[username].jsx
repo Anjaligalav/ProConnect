@@ -47,26 +47,26 @@ export default function ViewProfilePage({userProfile}) {
 
   useEffect(() => {
     let post = postState.posts.filter((post) => {
-      return post.userId.username === router.query.username; 
+      return post.userId?.username === router.query.username; 
     })
     setUserPosts(post);
   }, [postState.posts]);
 
   useEffect(() => {
 
-    if(authState.connections.some(user => user.connectionId._id === userProfile.userId._id)) {
+    if(authState.connections.some(user => user.connectionId?._id === userProfile.userId._id)) {
       setIsCurrentUserInConnection(true);
 
-      if(authState.connections.find(user => user.connectionId._id === userProfile.userId._id).status === true) {
+      if(authState.connections.find(user => user.connectionId?._id === userProfile.userId._id).status === true) {
         setIsConnectionNull(false);
       }
     }
 
 
-    if(authState.connectionRequest.some(user => user.userId._id === userProfile.userId._id)) {
+    if(authState.connectionRequest.some(user => user.userId?._id === userProfile.userId._id)) {
       setIsCurrentUserInConnection(true);
 
-      if(authState.connectionRequest.find(user => user.userId._id === userProfile.userId._id).status === true) {
+      if(authState.connectionRequest.find(user => user.userId?._id === userProfile.userId._id).status === true) {
         setIsConnectionNull(false);
       }
     }

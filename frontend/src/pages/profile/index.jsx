@@ -44,7 +44,7 @@ export default function ProfilePage() {
     if(authState.User !== undefined){
       setUserProfile(authState.User);
       let post = postState.posts.filter((post) => {
-        return post.userId.username === authState.User.userId.username; 
+        return post.userId?.username === authState.User.userId.username; 
       })
       setUserPosts(post);
     }

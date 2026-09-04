@@ -195,8 +195,9 @@ export const getAllUserProfile = async(req, res) => {
 
     const userProfile = await Profile.find(query)
         .populate('userId', 'name username email profilePicture');
-        
-    return res.json({ userProfile });
+
+    // Skip profiles whose user was deleted
+    return res.json({ userProfile: userProfile.filter(profile => profile.userId) });
 };
 
 
@@ -253,7 +254,9 @@ export const getMyConnectionRequests = async(req,res)=>{
     // Dono users ka data populate karein taaki frontend decide kar sake kaun dost hai
     .populate('userId', 'name username email profilePicture')
     .populate('connectionId', 'name username email profilePicture');
-    return res.json(connections);
+
+    // Skip requests where either side of the connection was deleted
+    return res.json(connections.filter(c => c.userId && c.connectionId));
 }
 
 export const whatAreMyConnections = async(req,res)=>{
@@ -263,7 +266,9 @@ export const whatAreMyConnections = async(req,res)=>{
         if(!user) return res.status(404).json({message:"User not found"});
 
         const connections = await ConnectionRequest.find({connectionId:user._id}).populate('userId','name username email profilePicture');
-        return res.json(connections);
+
+        // Skip connections whose user was deleted
+        return res.json(connections.filter(c => c.userId));
 }
 
 export const acceptConnectionRequest = async(req,res)=>{

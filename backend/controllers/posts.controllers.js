@@ -37,7 +37,9 @@ export const getAllPosts = async(req,res) =>{
         const posts = await Post.find()
         .sort({ createdAt: -1 }) 
         .populate('userId','name username email profilePicture');
-        return res.json({posts:posts});
+
+        // Skip posts whose author was deleted — populate() returns null for them
+        return res.json({posts: posts.filter(post => post.userId)});
     
 }
 
@@ -91,7 +93,8 @@ export const getCommentsByPost = async(req,res)=>{
         .populate('userId','name username profilePicture')
         .sort({ _id: -1 }); // Naya comment phle dikhega
         
-    return res.json({comments:comments});
+    // Skip comments whose author was deleted
+    return res.json({comments: comments.filter(comment => comment.userId)});
     
 }
 
