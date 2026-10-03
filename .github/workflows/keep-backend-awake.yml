@@ -1,0 +1,23 @@
+name: Keep backend awake
+
+# Render free instances sleep after 15 min idle and take ~30s to wake up.
+# Pinging every 10 min keeps the backend warm during active hours only, so the
+# month stays under Render's 750 free instance hours.
+on:
+  schedule:
+    # Active hours: 09:00 - 01:00 IST (03:30 - 19:30 UTC). Cron runs in UTC.
+    - cron: '20,30,40,50 3 * * *'   # 08:50 - 09:20 IST (first ping a bit early so it is warm by 9)
+    - cron: '*/10 4-18 * * *'       # 09:30 - 00:20 IST
+    - cron: '0,10,20 19 * * *'      # 00:30 - 00:50 IST (last ping keeps it up till ~01:05)
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping health endpoint
+        run: |
+          # --max-time 120 outlasts a cold start, so waking the server is never a failure
+          curl --fail --silent --show-error --max-time 120 \
+            --retry 2 --retry-delay 15 --retry-all-errors \
+            https://proconnectlinkedinclone-zw86.onrender.com/
